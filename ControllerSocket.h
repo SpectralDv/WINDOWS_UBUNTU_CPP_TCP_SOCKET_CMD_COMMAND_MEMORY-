@@ -335,7 +335,8 @@ public:
 
             rb = recv(connectSocket->socket,(char*)(connectSocket->cstr),sizeof(connectSocket->cstr)-1,0);
 
-            if(rb>=0)
+            //if(rb>=0) //for Windows
+            if(rb>0) //for Linux
             {
                 if(mSocket->type==NET_CLIENT)
                 {
