@@ -14,6 +14,8 @@
 
 #define DEBUG 0 
 
+
+
 #define TARGET_PLATFORM PLATFORM_UNIX
 #if TARGET_PLATFORM == PLATFORM_WINDOWS
     #include <iostream>
@@ -30,6 +32,7 @@
     #include <map>
     #include <cstring>
     #include <algorithm> //for replace
+    #include <regex>
     #pragma comment(lib,"wsock32.lib")
 #elif TARGET_PLATFORM == PLATFORM_UNIX
     #include <iostream>
@@ -46,6 +49,7 @@
     #include <netinet/in.h>
     #include <fcntl.h>
     #include <sys/ioctl.h>
+    #include <regex>
 #endif
 #endif
 

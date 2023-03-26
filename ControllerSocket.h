@@ -345,7 +345,10 @@ public:
                 if(mSocket->type==NET_SERVER)
                 {
                     //printf("rd: %d\n",rb);   
-                    HttpRequest(connectSocket);
+                    if(RegHttp(connectSocket->cstr,"HTTP")==1)
+                    {
+                        HttpRequest(connectSocket);
+                    }
                 }
 
                 connectSocket->cstr[rb]=0;
@@ -463,6 +466,22 @@ public:
 
         int result = send(mSocket->socket, response.str().c_str(),
             response.str().length(), 0);
+    }
+    int RegHttp(std::string str,std::string word)
+    {
+        std::smatch res;
+        std::regex re{"("+word+")"};
+        int i = 0;
+        for (std::sregex_iterator ibegin{str.begin(),str.end(),re},iend;ibegin!=iend;++ibegin)
+        {
+            if (ibegin->str(1)==word)
+            {
+                //std::cout<<ibegin->str(1)<<": "<<i<<"\n";
+                return 1;
+            }
+            i++;
+        }
+        return 0;
     }
 };
 #endif
