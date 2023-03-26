@@ -338,15 +338,17 @@ public:
             //if(rb>=0) //for Windows
             if(rb>0) //for Linux
             {
+                static std::string state_print = "print";
                 if(mSocket->type==NET_CLIENT)
                 {
                     if(rb==0){this->~ControllerSocket();}
                 }
-                if(mSocket->type==NET_SERVER)
+                else if(mSocket->type==NET_SERVER)
                 {
                     //printf("rd: %d\n",rb);   
                     if(RegHttp(connectSocket->cstr,"HTTP")==1)
                     {
+                        state_print = "noprint";
                         HttpRequest(connectSocket);
                     }
                 }
@@ -359,18 +361,22 @@ public:
                         mSocket->state=1;
                     }
                 }
-                printf("%s", inet_ntoa(connectSocket->sockaddr.sin_addr));
-				printf(": %d", ntohs(connectSocket->sockaddr.sin_port));
-                printf(": %s\n",connectSocket->cstr);
 
-                connectSocket->recvString=connectSocket->cstr;
+                if(state_print == "print")
+                {
+                    printf("%s", inet_ntoa(connectSocket->sockaddr.sin_addr));
+                    printf(": %d", ntohs(connectSocket->sockaddr.sin_port));
+                    printf(": %s\n",connectSocket->cstr);
 
-                mString.str=connectSocket->recvString;
-                Notify(mString);
+                    connectSocket->recvString=connectSocket->cstr;
 
-                strcpy(connectSocket->cstr, "");
-                connectSocket->recvStream.clear();
-                connectSocket->recvString.clear();
+                    mString.str=connectSocket->recvString;
+                    Notify(mString);
+
+                    strcpy(connectSocket->cstr, "");
+                    connectSocket->recvStream.clear();
+                    connectSocket->recvString.clear();
+                }
             }  
         }
     }
