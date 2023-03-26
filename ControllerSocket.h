@@ -345,6 +345,7 @@ public:
                 if(mSocket->type==NET_SERVER)
                 {
                     //printf("rd: %d\n",rb);   
+                    HttpRequest(connectSocket);
                 }
 
                 connectSocket->cstr[rb]=0;
@@ -443,6 +444,25 @@ public:
                 break;
             }
         }
+    }
+    void HttpRequest(ModelSocket *mSocket)
+    {
+        std::stringstream response; 
+        std::stringstream response_body; 
+
+        response_body << "<link rel=icon href=data:;base64,=>"
+            << "<title>spectrtaldev.ru</title>"
+            << "<h1 style=color:green;text-align:center;margin-top:5em;>spectraldev.ru</h1>";
+
+        response << "HTTP/1.1 200 OK\r\n"
+            << "Version: HTTP/1.1\r\n"
+            << "Content-Type: text/html; charset=utf-8\r\n"
+            << "Content-Length: " << response_body.str().length()
+            << "\r\n\r\n"
+            << response_body.str();
+
+        int result = send(mSocket->socket, response.str().c_str(),
+            response.str().length(), 0);
     }
 };
 #endif
