@@ -2,6 +2,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+//g++ -o main.exe main.cpp -lws2_32 -lpthread
 
 #define NET_SERVER 0
 #define NET_CLIENT 1
@@ -9,14 +10,12 @@
 #define PLATFORM_UNIX 1
 
 #define IP_ADDR "127.0.0.1"
-//#define IP_ADDR "192.168.56.1"
 #define PORT 1234
 
 #define DEBUG 0 
 
 
-
-#define TARGET_PLATFORM PLATFORM_UNIX
+#define TARGET_PLATFORM PLATFORM_WINDOWS
 #if TARGET_PLATFORM == PLATFORM_WINDOWS
     #include <iostream>
     #include <stdio.h>

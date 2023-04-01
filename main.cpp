@@ -4,7 +4,6 @@
 #include "ControllerData.h"
 #include "ControllerInput.h"
 
-//g++ -o main.exe main.cpp -lws2_32 -lpthread
 
 class ViewMain
 {
@@ -55,7 +54,7 @@ public:
     }
 };
 
-///*
+
 int main()
 {
     ViewMain *viewMain;
@@ -80,5 +79,5 @@ int main()
     delete viewMain;
     return 0;
 }
-//*/
+
 

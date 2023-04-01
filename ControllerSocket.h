@@ -146,7 +146,6 @@ public:
             while(connect_socket = accept(mSocket->socket,(sockaddr*)&connect_addr,&connect_addr_size))
             #endif
             {
-                //Sleep(10);
                 ModelSocket *connectSocket = new ModelSocket();
                 connectSocket->socket=connect_socket;
                 connectSocket->sockaddr=connect_addr;
@@ -461,6 +460,7 @@ public:
 
         response_body << "<link rel=icon href=data:;base64,=>"
             << "<title>spectrtaldev.ru</title>"
+            << "<style>body{background-color:#000;}</style>"
             << "<h1 style=color:green;text-align:center;margin-top:5em;>spectraldev.ru</h1>";
 
         response << "HTTP/1.1 200 OK\r\n"
