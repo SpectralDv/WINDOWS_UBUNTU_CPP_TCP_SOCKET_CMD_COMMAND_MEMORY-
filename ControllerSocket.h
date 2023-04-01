@@ -171,6 +171,7 @@ public:
 				printf("%s", inet_ntoa(vConnection[vConnection.size()-1]->sockaddr.sin_addr));
 				printf(": %d", ntohs(vConnection[vConnection.size()-1]->sockaddr.sin_port));
                 printf(": connected\n");
+                printf("Count connection: %ld\n",vConnection.size());
 
                 pthread_create(&(vConnection[vConnection.size()-1]->th),NULL,ControllerSocket::ThreadStub,(void*)this);
                 //pthread_join(th, NULL);
@@ -179,7 +180,7 @@ public:
         }
         if(mSocket->type==NET_CLIENT)
         {
-            //подключается к серверу
+            //подключает к серверу
             #if TARGET_PLATFORM == PLATFORM_WINDOWS
             int con = connect(mSocket->socket,(const SOCKADDR*)&(mSocket->sockaddr),sizeof(mSocket->sockaddr));
             if(con!=0){printf("Server disconnect\n");Sleep(1000);exit(0);}
@@ -334,8 +335,23 @@ public:
 
             rb = recv(connectSocket->socket,(char*)(connectSocket->cstr),sizeof(connectSocket->cstr)-1,0);
 
-            //if(rb>=0) //for Windows
-            if(rb>0) //for Linux
+            //if(rb<0){printf(" rb<0: %d",rb);} //success connect
+            //if(rb==0){printf(" rb==0: %d",rb);} //disconnect
+            if(mSocket->type == NET_CLIENT)
+            {
+                if(rb==0){this->~ControllerSocket();}
+            }
+            if(mSocket->type == NET_SERVER)
+            {
+                if(rb==0){printf("recv = 0\n");CloseSocket(connectSocket);}
+            }
+
+            #if TARGET_PLATFORM == PLATFORM_WINDOWS
+            if(rb>=0) 
+            #endif
+            #if TARGET_PLATFORM == PLATFORM_UNIX
+            if(rb>0) 
+            #endif
             {
                 static std::string state_print = "print";
                 if(mSocket->type==NET_CLIENT)
@@ -347,8 +363,10 @@ public:
                     //printf("rd: %d\n",rb);   
                     if(RegHttp(connectSocket->cstr,"HTTP")==1)
                     {
-                        state_print = "noprint";
+                        //state_print = "noprint";
                         HttpRequest(connectSocket);
+                        //для HTTP протокола, принудительно отключает клиента
+                        //CloseSocket(connectSocket);
                     }
                 }
 
@@ -452,6 +470,16 @@ public:
                 break;
             }
         }
+    }
+    int CloseSocket(ModelSocket *modelSocket)
+    {
+        #if TARGET_PLATFORM == PLATFORM_WINDOWS
+        closesocket(modelSocket->socket);
+        #endif
+        #if TARGET_PLATFORM == PLATFORM_UNIX
+        close(modelSocket->socket);
+        #endif
+        return 0;
     }
     void HttpRequest(ModelSocket *mSocket)
     {
